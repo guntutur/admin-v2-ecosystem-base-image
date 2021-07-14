@@ -1,11 +1,12 @@
 FROM ubuntu:16.04
-MAINTAINER Francisco Carmona <fcarmona.olmedo@gmail.com>
+MAINTAINER Gentur Santoso <guntutur@gmail.com>
 
 # Environments vars
 ENV TERM=xterm
 
 RUN apt-get update
 RUN apt-get -y upgrade
+RUN curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | bash
 
 # Packages installation
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y --fix-missing install apache2 \
@@ -25,7 +26,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y --fix-missing install apache2 \
       php-curl \
       apt-transport-https \
       nano \
-      lynx-cur
+      lynx-cur \
+      git \
+      php7.0-phalcon \
+      php-dev
 
 RUN a2enmod rewrite
 RUN phpenmod mcrypt
