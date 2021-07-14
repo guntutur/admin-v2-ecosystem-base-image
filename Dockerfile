@@ -6,7 +6,6 @@ ENV TERM=xterm
 
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | bash
 
 # Packages installation
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y --fix-missing install apache2 \
@@ -21,15 +20,19 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y --fix-missing install apache2 \
       php-soap \
       php-pear \
       php-mcrypt \
+      php-dev \
       libapache2-mod-php \
+      locales \
       curl \
       php-curl \
       apt-transport-https \
       nano \
       lynx-cur \
-      git \
-      php7.0-phalcon \
-      php-dev
+      git
+
+# install phalcon
+RUN curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | bash
+RUN apt-get clean && apt-get update && apt-get install -y php7.0-phalcon
 
 RUN a2enmod rewrite
 RUN phpenmod mcrypt
