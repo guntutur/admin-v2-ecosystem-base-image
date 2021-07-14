@@ -9,7 +9,7 @@ https://github.com/francarmona/docker-ubuntu16-apache2-php7/blob/master/Dockerfi
 
 Pull the latest stable version from the [Docker Hub Registry](https://hub.docker.com/r/guntutur/admin-v2-ecosystem-base-image/)
 ```
-docker pull francarmona/docker-ubuntu16-apache2-php7:latest
+docker pull guntutur/admin-v2-ecosystem-base-image:latest
 ```
 
 If you prefer building the image from source, clone the repository and run docker build
@@ -23,7 +23,7 @@ docker build -t guntutur/admin-v2-ecosystem-base-image .
 
 After building the image, run the container.
 ```
-docker run --name apache2-php7 -v ~/path/to/code:/var/www -d -p [host-port]:80 francarmona/docker-ubuntu16-apache2-php7
+docker run --name admin-v2-base-image -v ~/path/to/code:/var/www -d -p [host-port]:80 guntutur/admin-v2-ecosystem-base-image
 ```
 Browse to [http://localhost:[host-port]](http://localhost:[host-port]) to view your app.
 
