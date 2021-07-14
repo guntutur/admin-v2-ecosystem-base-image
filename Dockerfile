@@ -28,6 +28,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y --fix-missing install apache2 \
       apt-transport-https \
       nano \
       lynx-cur \
+      iputils-ping \
       git
 
 # install phalcon
