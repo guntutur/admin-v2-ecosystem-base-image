@@ -1,7 +1,7 @@
 FROM debian:stretch AS build
 MAINTAINER Gentur Santoso <guntutur@gmail.com>
 LABEL author="Gentur Santoso <guntutur@gmail.com>" \
-      maintainer="ID Supply Team Engineer"
+      maintainer="ID Supply Engineering Team"
 
 WORKDIR /build
 
@@ -17,31 +17,36 @@ ARG ENV=prod
 ENV ENV=${ENV}
 
 RUN apt-get -qq update && \
-    apt-get -qq -y install git openssh-client libbz2-dev libxml2-dev libxslt-dev libmcrypt-dev > /dev/null && \
+    apt-get -qq -y install git openssh-client libbz2-dev libxml2-dev libxslt-dev libmcrypt-dev libzip-dev > /dev/null && \
     if [ $ENV = "dev" ] ; then mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" ; else mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" ; fi && \
     echo "error_log = /dev/stdout" > /usr/local/etc/php/conf.d/additional.ini
 COPY --from=build /build/cphalcon/build/php7/64bits/modules/phalcon.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012/phalcon.so
 
 # Install extensions which already loaded on production instance
-RUN docker-php-ext-configure bz2 && docker-php-ext-install bz2 && \
-    docker-php-ext-configure calendar && docker-php-ext-install calendar && \
-    docker-php-ext-configure exif && docker-php-ext-install exif && \
-    docker-php-ext-configure gettext && docker-php-ext-install gettext && \
-    docker-php-ext-configure pdo_mysql && docker-php-ext-install pdo_mysql && \
-    docker-php-ext-configure pdo_mysql && docker-php-ext-install pdo_mysql && \
-    docker-php-ext-configure shmop && docker-php-ext-install shmop && \
-    docker-php-ext-configure mcrypt && docker-php-ext-install mcrypt && \
-    docker-php-ext-configure sysvmsg && docker-php-ext-install sysvmsg && \
-    docker-php-ext-configure sysvsem && docker-php-ext-install sysvsem && \
-    docker-php-ext-configure sysvshm && docker-php-ext-install sysvshm && \
-    docker-php-ext-configure wddx && docker-php-ext-install wddx && \
-    docker-php-ext-configure xsl && docker-php-ext-install xsl && \
+RUN docker-php-ext-install  bz2 \
+                            calendar \
+                            exif \
+                            gettext \
+                            pdo_mysql \
+                            shmop \
+                            mcrypt \
+                            sysvmsg \
+                            sysvsem \
+                            sysvshm \
+                            wddx \
+                            xsl \
+                            zip && \
     docker-php-ext-enable phalcon
 
 # install composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
+# set default document root
+ENV APACHE_DOCUMENT_ROOT /var/www/rumah123
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
+    sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
 # setup apache2
-RUN a2enmod rewrite > /dev/null && \
+RUN a2enmod rewrite headers > /dev/null && \
     service apache2 restart
