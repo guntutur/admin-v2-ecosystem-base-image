@@ -19,7 +19,7 @@ ENV ENV=${ENV}
 RUN apt-get -qq update && \
     apt-get -qq -y install git openssh-client libbz2-dev libxml2-dev libxslt-dev libmcrypt-dev libzip-dev > /dev/null && \
     if [ $ENV = "dev" ] ; then mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" ; else mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" ; fi && \
-    echo "error_log = /dev/stdout" > /usr/local/etc/php/conf.d/additional.ini
+    echo "error_log = /dev/stderr" > /usr/local/etc/php/conf.d/additional.ini
 COPY --from=build /build/cphalcon/build/php7/64bits/modules/phalcon.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012/phalcon.so
 
 # Install extensions which already loaded on production instance
